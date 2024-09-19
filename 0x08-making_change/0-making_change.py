@@ -1,35 +1,26 @@
 #!/usr/bin/python3
+
 """
-Determining fewest number of coins needed
-to meet given amount total
+Writing function Contained makeChange
 """
 
 
 def makeChange(coins, total):
     """
-    Determine function related on first description
-    Arguments:
-    coins -- list of coin values available
-    total -- the total amount to make change for
-    Return:
-    fewest number of coins needed, or -1 if the total cannot be met
+    Returnig: fewest number of coins needed to meet total
+        If total is 0 or less, return 0
+        If total cannot be met by any number of coins you have, return -1
     """
-    # If total is 0 or less, no coins are needed
+    if not coins or coins is None:
+        return -1
     if total <= 0:
         return 0
-
-    # Initialize DP array with 'infinity'
-    dp = [float('inf')] * (total + 1)
-
-    # Base case: 0 coins needed to make total 0
-    dp[0] = 0
-
-    # Iterate over each coin
+    change = 0
+    coins = sorted(coins)[::-1]
     for coin in coins:
-        # For each coin, update dp for every amount
-        for amount in range(coin, total + 1):
-            # Update by checking this coin results in fewer coins
-            dp[amount] = min(dp[amount], dp[amount - coin] + 1)
-
-    # If dp[total] is still infinity, total cannot be made with avail coins
-    return dp[total] if dp[total] != float('inf') else -1
+        while coin <= total:
+            total -= coin
+            change += 1
+        if (total == 0):
+            return change
+    return -1
