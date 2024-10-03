@@ -1,35 +1,46 @@
 #!/usr/bin/python3
+"""
+Writing function to solve the Prime Game
+"""
+
+
 def isWinner(x, nums):
-    if x < 1 or not nums:
+    """
+    Defining:
+    x as rounds
+    nums as numbers list
+    """
+    if x <= 0 or nums is None:
         return None
-    # Determine the maximum value of n
-    max_n = max(nums)
-    # Sieve of Eratosthenes to determine prime numbers up to max_n
-    primes = [True] * (max_n + 1)
-    primes[0] = primes[1] = False
-    for i in range(2, int(max_n ** 0.5) + 1):
-        if primes[i]:
-            for multiple in range(i * i, max_n + 1, i):
-                primes[multiple] = False
-    # Precompute the number of primes up to each number
-    prime_count = [0] * (max_n + 1)
-    for i in range(1, max_n + 1):
-        prime_count[i] = prime_count[i - 1] + (1 if primes[i] else 0)
-    # Now simulate each round of the game
-    maria_wins = 0
-    ben_wins = 0
+    if x != len(nums):
+        return None
 
-    for n in nums:
-        if prime_count[n] % 2 == 1:
-            # Maria wins if the count of primes is odd
-            maria_wins += 1
+    ben = 0
+    maria = 0
+
+    a = [1 for x in range(sorted(nums)[-1] + 1)]
+    a[0], a[1] = 0, 0
+    for i in range(2, len(a)):
+        rm_multiples(a, i)
+
+    for i in nums:
+        if sum(a[0:i + 1]) % 2 == 0:
+            ben += 1
         else:
-            # Ben wins if the count of primes is even
-            ben_wins += 1
-
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
+            maria += 1
+    if ben > maria:
         return "Ben"
-    else:
-        return None
+    if maria > ben:
+        return "Maria"
+    return None
+
+
+def rm_multiples(ls, x):
+    """
+    Removing multiple primes
+    """
+    for i in range(2, len(ls)):
+        try:
+            ls[i * x] = 0
+        except (ValueError, IndexError):
+            break
